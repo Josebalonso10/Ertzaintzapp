@@ -7,8 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
-$professional_id = $_POST['professional_id'] ?? '';
-$password = $_POST['password'] ?? '';
+$professional_id = trim($_POST['professional_id'] ?? '');
+$password = trim($_POST['password'] ?? '');
 
 if ($professional_id === '' || $password === '') {
   echo json_encode(['success' => false, 'message' => 'Faltan datos']);
@@ -21,6 +21,7 @@ if (findUserByProfessionalId($professional_id)) {
 }
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
+
 createUser($professional_id, $hash, false, false);
 
-echo json_encode(['success' => true]);
+echo json_encode(['success' => true, 'message' => 'Registro creado correctamente']);
