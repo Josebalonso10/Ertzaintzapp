@@ -3,6 +3,8 @@ session_start();
 require_once 'api.php';
 header('Content-Type: application/json; charset=utf-8');
 
+ensureDefaultAdmin();
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   echo json_encode(['success' => false, 'message' => 'Método no permitido']);
   exit;
