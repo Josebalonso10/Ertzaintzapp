@@ -12,6 +12,12 @@
 </head>
 <body class="theme-dark">
 
+  <button id="darkModeToggle" class="glass-toggle">🌙 / ☀️</button>
+
+  <div class="logo-badge">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Escudo_de_la_Ertzaintza.svg/500px-Escudo_de_la_Ertzaintza.svg.png" alt="Escudo">
+  </div>
+
   <header class="glass-header">
     <div class="header-inner">
       <div class="header-left">
@@ -19,36 +25,34 @@
         <span id="userRoleBadge" class="role-badge">Usuario</span>
       </div>
 
-      <nav class="tabs-nav" aria-label="Navegación principal">
+      <nav class="tabs-nav">
         <button class="tab-btn active" data-tab="calendar">Calendario</button>
         <button class="tab-btn" data-tab="summary">Resumen</button>
         <button class="tab-btn" data-tab="settings">Índices</button>
       </nav>
 
       <div class="header-right">
-        <button id="profileButton" class="glass-btn icon-btn">Perfil / Admin</button>
+        <button id="profileButton" class="glass-btn icon-btn">Admin</button>
         <button id="logoutButton" class="glass-btn danger icon-btn">Salir</button>
       </div>
     </div>
   </header>
 
   <main class="app-layout">
+    <!-- TAB: Calendario -->
     <section id="tab-calendar" class="tab-view active">
       <div class="glass-card">
         <div class="calendar-header">
           <div class="calendar-nav">
             <label>Año</label>
             <select id="calendarYearSelect"></select>
-
             <label>Mes</label>
             <select id="calendarMonthSelect"></select>
-
             <button id="calendarPrevMonth" class="glass-icon-btn">◀</button>
             <button id="calendarNextMonth" class="glass-icon-btn">▶</button>
           </div>
-
           <div class="shift-cycle">
-            <label>Ciclo de trabajo</label>
+            <label>Ciclo</label>
             <select id="shiftCycleSelect">
               <option value="G1">G1</option>
               <option value="G2">G2</option>
@@ -58,49 +62,42 @@
             </select>
           </div>
         </div>
-
         <div id="calendarGrid" class="calendar-grid"></div>
       </div>
 
       <section class="glass-card">
         <h2>Cómputo horario</h2>
         <div class="hours-summary">
-          <div>
-            <span>Saldo actual (horas):</span>
-            <span id="balanceHours">0</span>
-          </div>
+          <div><span>Saldo actual:</span> <span id="balanceHours">0</span> h</div>
           <button id="editBalanceButton" class="glass-btn">Modificar cómputo</button>
         </div>
       </section>
 
       <section class="glass-card">
         <h2>Notas del mes</h2>
-        <textarea id="monthlyNotes" rows="4" placeholder="Incidencias, recordatorios, etc."></textarea>
+        <textarea id="monthlyNotes" rows="4" placeholder="Incidencias..."></textarea>
         <div class="checklist">
           <h3>Checklist</h3>
           <div id="checklistItems"></div>
-          <div class="checklist-actions">
-            <input type="text" id="newChecklistItemText" placeholder="Nueva tarea">
+          <div class="checklist-actions" style="display:flex; gap:10px; margin-top:10px;">
+            <input type="text" id="newChecklistItemText" placeholder="Nueva tarea" style="flex:1;">
             <button id="addChecklistItem" class="glass-btn">Añadir</button>
           </div>
         </div>
       </section>
-
+      
       <section class="glass-card">
         <h2>Extras del mes</h2>
         <div id="extrasList"></div>
       </section>
     </section>
 
+    <!-- TAB: Resumen -->
     <section id="tab-summary" class="tab-view">
       <div class="glass-card">
         <div class="summary-header">
-          <label>Año</label>
-          <select id="summaryYearSelect"></select>
-
-          <label>Mes</label>
-          <select id="summaryMonthSelect"></select>
-
+          <label>Año</label> <select id="summaryYearSelect"></select>
+          <label>Mes</label> <select id="summaryMonthSelect"></select>
           <button id="summaryPrevMonth" class="glass-icon-btn">◀</button>
           <button id="summaryNextMonth" class="glass-icon-btn">▶</button>
         </div>
@@ -111,32 +108,23 @@
         </section>
 
         <section>
-          <h2>Complementos a cobrar este mes</h2>
+          <h2>Complementos a cobrar este mes (Hace 2 meses)</h2>
           <div id="summaryExtrasTwoMonthsAgo"></div>
         </section>
 
-        <section class="glass-card">
+        <section class="glass-card" style="margin-top:20px;">
           <h2>Horas y vacaciones</h2>
           <div class="hours-block">
-            <div>
-              <span>Diferencia horaria actual:</span>
-              <span id="summaryBalanceHours">0</span>
+            <div class="user-row">
+              <span>Diferencia horaria: <span id="summaryBalanceHours">0</span>h</span>
               <button id="summaryEditBalance" class="glass-btn">Ajustar</button>
             </div>
-
-            <div>
-              <span>Vacaciones restantes:</span>
-              <span id="vacationHours">176</span>
+            <div class="user-row">
+              <span>Vacaciones: <span id="vacationHours">176</span>h</span>
               <button id="editVacationHours" class="glass-btn">Ajustar</button>
             </div>
-
-            <div>
-              <span>Asuntos particulares restantes:</span>
-              <span id="personalHours">60</span>
-              <select id="personalHoursMode">
-                <option value="60">60 h</option>
-                <option value="32">32 h (compensación económica)</option>
-              </select>
+            <div class="user-row">
+              <span>Asuntos part.: <span id="personalHours">60</span>h</span>
               <button id="editPersonalHours" class="glass-btn">Ajustar</button>
             </div>
           </div>
@@ -144,21 +132,30 @@
       </div>
     </section>
 
+    <!-- TAB: Settings -->
     <section id="tab-settings" class="tab-view">
       <div class="glass-card">
         <h2>Índices, claves y festivos</h2>
-        <label>
-          <input type="checkbox" id="useAdminDefaults">
-          Usar índices por defecto del administrador
+        <label style="margin-bottom:15px; display:block;">
+          <input type="checkbox" id="useAdminDefaults"> Usar índices del administrador
         </label>
-        <div id="userIndexesForm"></div>
+        <div id="userIndexesForm" style="margin-bottom:30px;"></div>
 
-        <h3>Festivos</h3>
-        <div id="holidayList"></div>
+        <h3>Gestión de Festivos</h3>
+        <div id="holidayList" style="margin-bottom:15px;"></div>
+        <div class="holiday-form" style="display:flex; gap:10px; flex-wrap:wrap;">
+          <input type="date" id="newHolidayDate">
+          <select id="newHolidayType">
+            <option value="8">Festivo 8h (L-V)</option>
+            <option value="12">Festivo 12h (S-D)</option>
+          </select>
+          <button id="addHolidayButton" class="glass-btn">Añadir</button>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- Modal Día -->
   <div id="dayModal" class="modal hidden">
     <div class="modal-content glass-card">
       <div class="modal-header">
@@ -166,6 +163,30 @@
         <button id="closeDayModal" class="glass-btn">✕</button>
       </div>
       <div id="dayModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal Extras -->
+  <div id="extraModal" class="modal hidden">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2 id="extraModalDate">Extra</h2>
+        <button id="cancelExtraTop" class="glass-btn">✕</button>
+      </div>
+      <label>Tipo</label>
+      <select id="extraType" style="width:100%; margin-bottom:15px;">
+        <option value="modificacion">Modificación jornada</option>
+        <option value="refuerzo">Refuerzo</option>
+        <option value="juicio">Juicio</option>
+        <option value="vacaciones">Vacaciones</option>
+        <option value="asuntos">Asuntos</option>
+        <option value="baja">Baja</option>
+      </select>
+      <div id="extraDynamicFields" style="margin-bottom:20px;"></div>
+      <div style="display:flex; gap:10px;">
+        <button id="saveExtra" class="glass-btn" style="flex:1; background:var(--blue); color:white;">Guardar</button>
+        <button id="cancelExtra" class="glass-btn danger" style="flex:1;">Cancelar</button>
+      </div>
     </div>
   </div>
 
