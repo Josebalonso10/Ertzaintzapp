@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Guardián de sesión: si no hay usuario, vamos a login
   const user = getStoredUser();
+
   if (!user && !window.location.pathname.includes('login.html')) {
     window.location.href = 'login.html';
     return;
@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('userRoleBadge').textContent = user.professional_id;
   }
 
-  // Tabs
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Tema Noche/Día
   const toggle = document.getElementById('darkModeToggle');
   if (toggle) {
     const theme = loadUserData('theme', 'dark');
@@ -33,19 +31,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Logout
   document.getElementById('logoutButton')?.addEventListener('click', () => {
     localStorage.removeItem('ertzaintza_user');
     window.location.href = 'login.html';
   });
 
-  // Init módulos
-  if(typeof initCalendar === 'function') initCalendar();
-  if(typeof initNotes === 'function') initNotes();
-  if(typeof initSummary === 'function') initSummary();
-  if(typeof initSettings === 'function') initSettings();
+  if (typeof initCalendar === 'function') initCalendar();
+  if (typeof initNotes === 'function') initNotes();
+  if (typeof initSummary === 'function') initSummary();
+  if (typeof initSettings === 'function') initSettings();
 });
 
 function getStoredUser() {
-  try { return JSON.parse(localStorage.getItem('ertzaintza_user')); } catch { return null; }
+  try {
+    return JSON.parse(localStorage.getItem('ertzaintza_user'));
+  } catch {
+    return null;
+  }
 }
