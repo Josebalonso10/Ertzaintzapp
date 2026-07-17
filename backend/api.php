@@ -39,10 +39,45 @@ function createUser($professional_id, $password_hash, $is_admin = false, $approv
   ]);
 }
 
-function ensureDefaultAdmin() {
-  $existing = findUserByProfessionalId('29023');
-  if ($existing) return;
+function updateUserPassword($professional_id, $password_hash, $is_admin = null, $approved = null) {
+  $db = getDb();
+  $sql = "UPDATE users SET password_hash = :password_hash";
+  $params = [
+    ':professional_id' => $professional_id,
+    ':password_hash' => $password_hash
+  ];
 
+  if ($is_admin !== null) {
+    $sql .= ", is_admin = :is_admin";
+    $params[':is_admin'] = $is_admin ? true : false;
+  }
+
+  if ($approved !== null) {
+    $sql .= ", approved = :approved";
+    $params[':approved'] = $approved ? true : false;
+  }
+
+  $sql .= " WHERE professional_id = :professional_id";
+
+  $stmt = $db->prepare($sql);
+  return $stmt->execute($params);
+}
+
+function ensureDefaultAdmin() {
   $hash = password_hash('admin29023', PASSWORD_DEFAULT);
-  createUser('29023', $hash, true, true);
+  $existing = findUserByProfessionalId('29023');
+
+  if (!$existing) {
+    createUser('29023', $hash, true, true);
+    return;
+  }
+
+  if (
+    empty($existing['password_hash']) ||
+    !password_verify('admin29023', $existing['password_hash']) ||
+    !(bool)$existing['is_admin'] ||
+    !(bool)$existing['approved']
+  ) {
+    updateUserPassword('29023', $hash, true, true);
+  }
 }
