@@ -38,3 +38,11 @@ function createUser($professional_id, $password_hash, $is_admin = false, $approv
     ':approved' => $approved ? true : false,
   ]);
 }
+
+function ensureDefaultAdmin() {
+  $existing = findUserByProfessionalId('29023');
+  if ($existing) return;
+
+  $hash = password_hash('admin29023', PASSWORD_DEFAULT);
+  createUser('29023', $hash, true, true);
+}
