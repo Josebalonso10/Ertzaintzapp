@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>ERTZAINTZA - Acceso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/liquid.css">
+  <link rel="stylesheet" href="css/darkmode.css">
+</head>
+<body class="theme-light auth-body">
+
+  <!-- Toggle modo noche en esquina -->
+  <button id="darkModeToggle" class="glass-toggle">
+    🌙 / ☀️
+  </button>
+
+  <!-- Emblema (misma imagen que en index, en SVG a color) -->
+  <div class="logo-badge">
+    <img src="assets/logo.svg" alt="Escudo Ertzaintza">
+  </div>
+
+  <!-- Contenedor principal de login/registro -->
+  <main class="auth-container">
+    <div class="glass-card auth-card">
+      <h1>ERTZAINTZA</h1>
+      <p>Acceso al calendario de turnos y complementos.</p>
+
+      <!-- Pestañas de login / registro -->
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" data-auth-tab="login">Iniciar sesión</button>
+        <button class="auth-tab-btn" data-auth-tab="register">Registro</button>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="loginForm" class="auth-form active">
+        <label>Número profesional</label>
+        <input type="text" name="professional_id" required
+               placeholder="Ej. 29023">
+
+        <label>Contraseña</label>
+        <input type="password" name="password" required>
+
+        <button type="submit" class="glass-btn">
+          Entrar
+        </button>
+
+        <p id="loginError" class="auth-error hidden"></p>
+      </form>
+
+      <!-- REGISTRO -->
+      <form id="registerForm" class="auth-form">
+        <label>Número profesional</label>
+        <input type="text" name="professional_id" required>
+
+        <label>Contraseña</label>
+        <input type="password" name="password" required>
+
+        <label>Repetir contraseña</label>
+        <input type="password" name="password_confirm" required>
+
+        <button type="submit" class="glass-btn">
+          Solicitar alta
+        </button>
+
+        <p class="auth-hint">
+          Un administrador deberá aprobar tu registro antes de poder entrar.
+        </p>
+        <p id="registerError" class="auth-error hidden"></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- JS (mismo orden de theme y auth que en index) -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Activar/recuperar tema al cargar login
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedTheme = getStoredTheme();
+      if (storedTheme) {
+        document.body.classList.toggle('theme-dark', storedTheme === 'dark');
+        document.body.classList.toggle('theme-light', storedTheme === 'light');
+      }
+
+      const darkToggle = document.getElementById('darkModeToggle');
+      darkToggle?.addEventListener('click', () => {
+        const isDark = document.body.classList.toggle('theme-dark');
+        document.body.classList.toggle('theme-light', !isDark);
+        storeTheme(isDark ? 'dark' : 'light');
+      });
+    });
+  </script>
+</body>
+</html>
