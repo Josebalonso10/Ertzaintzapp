@@ -1,0 +1,36 @@
+#userAdminList,
+#adminGlobalIndexes,
+#adminGlobalHolidays {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+}
+.user-row span {
+  font-size: 0.85rem;
+}
+.user-row button {
+  font-size: 0.75rem;
+}
+
+/* Holiday list */
+#holidayList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.holiday-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(252, 211, 77, 0.18);
+}
