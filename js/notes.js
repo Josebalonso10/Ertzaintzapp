@@ -1,57 +1,44 @@
 function initNotes() {
-  const notes = document.getElementById('monthlyNotes');
-  const checklistContainer = document.getElementById('checklistItems');
+  const notesArea = document.getElementById('monthlyNotes');
   const addBtn = document.getElementById('addChecklistItem');
-  const newText = document.getElementById('newChecklistItemText');
+  const input = document.getElementById('newChecklistItemText');
+  const list = document.getElementById('checklistItems');
 
-  const year = currentCalendarYear;
-  const month = currentCalendarMonth;
+  const data = loadUserData('monthlyNotes', { text: '', checklist: [] });
+  notesArea.value = data.text;
 
-  // Cargar notas y checklist
-  const key = `notes_${year}_${month}`;
-  const stored = loadUserData(key, { text: '', checklist: [] });
-  notes.value = stored.text;
-  renderChecklist(stored.checklist, checklistContainer);
-
-  notes.addEventListener('input', () => {
-    const data = loadUserData(key, { text: '', checklist: [] });
-    data.text = notes.value;
-    saveUserData(key, data);
+  notesArea.addEventListener('input', () => {
+    data.text = notesArea.value;
+    saveUserData('monthlyNotes', data);
   });
+
+  function renderList() {
+    list.innerHTML = '';
+    data.checklist.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'user-row';
+      div.innerHTML = `<label><input type="checkbox" ${item.done ? 'checked' : ''}> ${item.text}</label> <button class="glass-btn danger" style="padding:2px 8px;">✕</button>`;
+      
+      div.querySelector('input').addEventListener('change', (e) => {
+        item.done = e.target.checked;
+        saveUserData('monthlyNotes', data);
+      });
+      div.querySelector('button').addEventListener('click', () => {
+        data.checklist.splice(idx, 1);
+        saveUserData('monthlyNotes', data);
+        renderList();
+      });
+      list.appendChild(div);
+    });
+  }
 
   addBtn.addEventListener('click', () => {
-    const t = newText.value.trim();
-    if (!t) return;
-    const data = loadUserData(key, { text: notes.value, checklist: [] });
-    data.checklist.push({ text: t, done: false });
-    saveUserData(key, data);
-    newText.value = '';
-    renderChecklist(data.checklist, checklistContainer);
+    if(!input.value.trim()) return;
+    data.checklist.push({ text: input.value.trim(), done: false });
+    saveUserData('monthlyNotes', data);
+    input.value = '';
+    renderList();
   });
-}
 
-function renderChecklist(items, container) {
-  container.innerHTML = '';
-  items.forEach((item, idx) => {
-    const row = document.createElement('div');
-    row.className = 'user-row';
-
-    const label = document.createElement('label');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = item.done;
-    cb.addEventListener('change', () => {
-      const year = currentCalendarYear;
-      const month = currentCalendarMonth;
-      const key = `notes_${year}_${month}`;
-      const data = loadUserData(key, { text: '', checklist: [] });
-      data.checklist[idx].done = cb.checked;
-      saveUserData(key, data);
-    });
-
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(' ' + item.text));
-    row.appendChild(label);
-    container.appendChild(row);
-  });
+  renderList();
 }
