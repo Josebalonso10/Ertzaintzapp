@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $professional_id = trim($_POST['professional_id'] ?? '');
-$password = trim($_POST['password'] ?? '');
+$password = $_POST['password'] ?? '';
 
 if ($professional_id === '' || $password === '') {
   echo json_encode(['success' => false, 'message' => 'Faltan datos']);
