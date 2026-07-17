@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
       document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+      if (btn.dataset.tab === 'summary' && typeof renderSummary === 'function') renderSummary();
     });
   });
 
