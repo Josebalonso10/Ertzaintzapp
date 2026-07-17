@@ -1,142 +1,228 @@
-:root {
-  --bg-dark: #070b14;
-  --bg-light: #e0e7ff;
-  --text-dark: #e5e7eb;
-  --text-light: #1e293b;
-  --blue: #3b82f6;
-  --green: #22c55e;
-  --red: #ef4444;
-  --yellow: #facc15;
-  --orange: #f97316;
+:root{
+  --bg-dark:#070b14;
+  --bg-light:#e0e7ff;
+  --text-dark:#e5e7eb;
+  --text-light:#1e293b;
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --yellow:#facc15;
+  --orange:#f97316;
+  --purple-soft:#c4b5fd;
+  --purple-soft-2:#ddd6fe;
 }
 
-* { box-sizing: border-box; }
-body {
-  margin: 0; padding: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  min-height: 100vh;
-  transition: background 0.3s, color 0.3s;
+*{box-sizing:border-box}
+body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;min-height:100vh;transition:background .3s,color .3s}
+
+body.theme-dark{
+  background:radial-gradient(circle at 10% 0%, rgba(59,130,246,0.2) 0%, transparent 40%),
+             radial-gradient(circle at 90% 90%, rgba(192,132,252,0.15) 0%, transparent 40%),
+             var(--bg-dark);
+  color:var(--text-dark)
 }
 
-body.theme-dark {
-  background: radial-gradient(circle at 10% 0%, rgba(59,130,246,0.2) 0%, transparent 40%),
-              radial-gradient(circle at 90% 90%, rgba(192,132,252,0.15) 0%, transparent 40%),
-              var(--bg-dark);
-  color: var(--text-dark);
+body.theme-light{
+  background:radial-gradient(circle at 10% 0%, rgba(59,130,246,0.3) 0%, transparent 40%),
+             radial-gradient(circle at 90% 90%, rgba(34,197,94,0.2) 0%, transparent 40%),
+             var(--bg-light);
+  color:var(--text-light)
 }
 
-body.theme-light {
-  background: radial-gradient(circle at 10% 0%, rgba(59,130,246,0.3) 0%, transparent 40%),
-              radial-gradient(circle at 90% 90%, rgba(34,197,94,0.2) 0%, transparent 40%),
-              var(--bg-light);
-  color: var(--text-light);
+.glass-card{
+  background:linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid rgba(255,255,255,0.2);
+  border-top:1px solid rgba(255,255,255,0.4);
+  border-left:1px solid rgba(255,255,255,0.4);
+  box-shadow:0 8px 32px 0 rgba(0,0,0,0.25), inset 0 0 15px rgba(255,255,255,0.05);
+  border-radius:24px;
+  padding:20px;
+  position:relative;
+  overflow:hidden;
 }
 
-/* Liquid Glass Cards */
-.glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-top: 1px solid rgba(255,255,255,0.4);
-  border-left: 1px solid rgba(255,255,255,0.4);
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25), inset 0 0 15px rgba(255,255,255,0.05);
-  border-radius: 24px;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+body.theme-light .glass-card{
+  background:linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%);
+  border:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 8px 32px 0 rgba(0,0,0,0.1), inset 0 0 20px rgba(255,255,255,0.5)
 }
 
-body.theme-light .glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%);
-  border: 1px solid rgba(255,255,255,0.6);
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1), inset 0 0 20px rgba(255,255,255,0.5);
+.glass-header{
+  position:sticky;top:0;z-index:100;
+  padding:12px 18px;
+  background:rgba(10,14,30,0.6);
+  backdrop-filter:blur(24px) saturate(150%);
+  border-bottom:1px solid rgba(255,255,255,0.15)
+}
+body.theme-light .glass-header{background:rgba(255,255,255,0.6)}
+
+.header-inner{
+  max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:15px
 }
 
-/* Fix Header Centralizado */
-.glass-header {
-  position: sticky; top: 0; z-index: 100;
-  padding: 12px 20px;
-  background: rgba(10, 14, 30, 0.6);
-  backdrop-filter: blur(24px) saturate(150%);
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-}
-body.theme-light .glass-header { background: rgba(255,255,255,0.6); }
-
-.header-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr auto 1fr;
-  align-items: center; gap: 15px;
-}
-.header-left { display: flex; align-items: center; gap: 10px; }
-.header-right { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
-
-.app-title { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: 0.1em; }
-.role-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; background: rgba(59,130,246,0.2); border: 1px solid var(--blue); }
-
-/* Logo & Toggle Noche */
-.logo-badge {
-  position: fixed; top: 12px; right: 20px; z-index: 1000;
-  width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.3);
-  display: flex; align-items: center; justify-content: center;
-}
-.logo-badge img { width: 32px; height: 32px; }
-
-.glass-toggle {
-  position: fixed; bottom: 20px; right: 20px; z-index: 1000;
-  width: 50px; height: 50px; border-radius: 50%;
-  background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.3);
-  font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+.header-left{
+  display:flex;align-items:center;gap:12px;min-width:0
 }
 
-/* Tabs Mobile friendly */
-.tabs-nav { display: flex; gap: 8px; justify-content: center; overflow-x: auto; scrollbar-width: none; }
-.tab-btn {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
-  color: inherit; padding: 8px 18px; border-radius: 20px; cursor: pointer; white-space: nowrap;
-}
-.tab-btn.active { background: var(--blue); color: #fff; border-color: rgba(255,255,255,0.4); box-shadow: 0 0 15px rgba(59,130,246,0.5); }
-
-/* Inputs y Botones Liquid */
-.glass-btn {
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-  color: inherit; padding: 8px 16px; border-radius: 20px; cursor: pointer;
-}
-.glass-btn.danger { background: rgba(239,68,68,0.2); border-color: var(--red); }
-input, select, textarea {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
-  color: inherit; padding: 10px; border-radius: 12px;
-}
-body.theme-light input, body.theme-light select, body.theme-light textarea { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
-
-/* Listas */
-.user-row, .holiday-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 8px;
-  border: 1px solid rgba(255,255,255,0.05);
+.header-right{
+  display:flex;align-items:center;gap:10px;justify-content:flex-end
 }
 
-/* Modal Liquid Glass */
-.modal.hidden { display: none; }
-.modal {
-  position: fixed; inset: 0; z-index: 2000;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
-  display: flex; align-items: center; justify-content: center; padding: 15px;
+.top-logo-wrap{
+  width:42px;height:42px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.22);
+  box-shadow:0 4px 15px rgba(0,0,0,0.15), inset 0 0 10px rgba(255,255,255,0.06);
+  overflow:hidden;flex:0 0 auto
 }
-.modal-content { width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-header h2 { margin: 0; }
 
-.app-layout { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 20px; }
-.tab-view { display: none; }
-.tab-view.active { display: block; }
+.top-logo{
+  width:28px;height:28px;object-fit:contain
+}
 
-@media (max-width: 800px) {
-  .header-inner { grid-template-columns: 1fr; }
-  .header-left, .header-right { justify-content: space-between; }
-  .tabs-nav { justify-content: flex-start; }
-  .logo-badge { display: none; } /* En móvil el escudo molesta arriba, lo quitamos de ahí */
+.app-title{
+  margin:0;font-size:1.4rem;font-weight:800;letter-spacing:.1em;white-space:nowrap
+}
+
+.role-badge{
+  padding:4px 10px;border-radius:20px;font-size:.75rem;
+  background:rgba(59,130,246,0.2);border:1px solid var(--blue)
+}
+
+.logo-badge{display:none}
+
+.glass-toggle{
+  position:fixed;bottom:20px;right:20px;z-index:1000;
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.3);
+  font-size:1.2rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3)
+}
+
+.tabs-nav{
+  display:flex;gap:8px;justify-content:center;overflow-x:auto;scrollbar-width:none
+}
+.tabs-nav::-webkit-scrollbar{display:none}
+
+.tab-btn{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);
+  color:inherit;padding:8px 18px;border-radius:20px;cursor:pointer;white-space:nowrap
+}
+.tab-btn.active{
+  background:var(--blue);color:#fff;border-color:rgba(255,255,255,0.4);
+  box-shadow:0 0 15px rgba(59,130,246,0.5)
+}
+
+.glass-btn,.glass-icon-btn{
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+  color:inherit;padding:8px 16px;border-radius:20px;cursor:pointer
+}
+.glass-btn.danger{background:rgba(239,68,68,0.2);border-color:var(--red)}
+.icon-btn{white-space:nowrap}
+
+.app-layout{
+  max-width:1280px;margin:20px auto;padding:0 15px 24px;
+  display:flex;flex-direction:column;gap:20px
+}
+
+.tab-view{display:none}
+.tab-view.active{display:block}
+
+.calendar-header,.summary-header{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;margin-bottom:14px
+}
+
+.calendar-nav,.shift-cycle{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap
+}
+
+select,input,textarea{
+  border-radius:14px;border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.05);color:inherit;padding:10px
+}
+body.theme-light input, body.theme-light select, body.theme-light textarea{
+  background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1)
+}
+textarea{width:100%;resize:vertical}
+
+.notes-wide{width:100%}
+.notes-wide textarea{min-height:160px;width:100%}
+
+.checklist-actions{
+  display:flex;gap:10px;margin-top:10px;flex-wrap:wrap
+}
+.checklist-actions input{flex:1;min-width:220px}
+
+.indexes-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap:12px;
+}
+
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7, minmax(0,1fr));
+  gap:10px
+}
+
+.calendar-day-header{
+  text-align:center;color:var(--muted,#94a3b8);font-size:.82rem;letter-spacing:.06em
+}
+
+.calendar-cell{
+  min-height:94px;border-radius:22px;padding:8px;border:2px solid rgba(148,163,184,.25);
+  background:rgba(255,255,255,.05);cursor:pointer;display:flex;flex-direction:column;justify-content:flex-start;gap:6px
+}
+.calendar-cell-date{font-size:1rem;font-weight:700}
+.calendar-cell-header{display:flex;justify-content:space-between;align-items:flex-start}
+.shift-morning{border-color:var(--green);background:rgba(34,197,94,.08)}
+.shift-afternoon{border-color:var(--blue);background:rgba(59,130,246,.08)}
+.shift-night{border-color:var(--red);background:rgba(239,68,68,.08)}
+.shift-free{border-style:dashed;opacity:.92}
+.holiday-border{box-shadow:inset 0 0 0 2px var(--yellow)}
+.extra-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:6px
+}
+.absence-vacation,.absence-personal,.absence-permission{
+  background:rgba(196,181,253,.22);
+}
+.absence-baja{
+  background:rgba(239,68,68,.25)
+}
+.absence-keep-border{border-width:2px}
+
+.user-row,.holiday-item,.admin-user-item,.index-item{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:12px;border-radius:14px;background:rgba(255,255,255,0.05);margin-bottom:8px
+}
+
+.modal.hidden{display:none}
+.modal{
+  position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:15px
+}
+.modal-content{width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-header h2{margin:0}
+
+@media (max-width:800px){
+  .header-inner{grid-template-columns:1fr;gap:10px}
+  .header-left,.header-right{justify-content:space-between}
+  .tabs-nav{justify-content:flex-start}
+  .calendar-grid{gap:8px}
+  .calendar-cell{min-height:82px}
+  .logo-badge{display:none}
+  .app-title{font-size:1.2rem}
+}
+
+@media (max-width:560px){
+  .app-layout{padding:0 10px 22px}
+  .glass-card{padding:14px}
+  .calendar-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .calendar-day-header{display:none}
 }
