@@ -1,12 +1,14 @@
 let currentCalendarYear = new Date().getFullYear();
-let currentCalendarMonth = new Date().getMonth(); // 0-11
+let currentCalendarMonth = new Date().getMonth();
+let activeModalDate = null;
 
 function initCalendar() {
   const yearSelect = document.getElementById('calendarYearSelect');
   const monthSelect = document.getElementById('calendarMonthSelect');
   const cycleSelect = document.getElementById('shiftCycleSelect');
 
-  // Rango de años: 2021–2030
+  if (!yearSelect || !monthSelect || !cycleSelect) return;
+
   for (let y = 2021; y <= 2030; y++) {
     const opt = document.createElement('option');
     opt.value = y;
@@ -15,15 +17,12 @@ function initCalendar() {
     yearSelect.appendChild(opt);
   }
 
-  const months = [
-    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-  ];
-  months.forEach((name, idx) => {
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  months.forEach((m, i) => {
     const opt = document.createElement('option');
-    opt.value = idx;
-    opt.textContent = name;
-    if (idx === currentCalendarMonth) opt.selected = true;
+    opt.value = i;
+    opt.textContent = m;
+    if (i === currentCalendarMonth) opt.selected = true;
     monthSelect.appendChild(opt);
   });
 
@@ -31,6 +30,7 @@ function initCalendar() {
     currentCalendarYear = parseInt(yearSelect.value, 10);
     renderCalendar();
   });
+
   monthSelect.addEventListener('change', () => {
     currentCalendarMonth = parseInt(monthSelect.value, 10);
     renderCalendar();
@@ -58,49 +58,53 @@ function initCalendar() {
     renderCalendar();
   });
 
-  cycleSelect.addEventListener('change', () => {
-    renderCalendar();
-  });
+  cycleSelect.addEventListener('change', renderCalendar);
 
-  // Notas y checklist
-  initNotes();
+  const closeModalBtn = document.getElementById('closeDayModal');
+  const modal = document.getElementById('dayModal');
+  if (closeModalBtn && modal) {
+    closeModalBtn.addEventListener('click', closeDayModal);
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeDayModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeDayModal();
+    });
+  }
+
   renderCalendar();
 }
 
 function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
+  if (!grid) return;
+
   grid.innerHTML = '';
 
   const year = currentCalendarYear;
   const month = currentCalendarMonth;
-  const selectedGroup = document.getElementById('shiftCycleSelect').value;
+  const selectedGroup = document.getElementById('shiftCycleSelect')?.value || 'G1';
 
-  // Cabeceras de días
   const dayNames = ['L','M','X','J','V','S','D'];
-  dayNames.forEach(name => {
-    const header = document.createElement('div');
-    header.className = 'calendar-day-header';
-    header.textContent = name;
-    grid.appendChild(header);
+  dayNames.forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'calendar-day-header';
+    h.textContent = d;
+    grid.appendChild(h);
   });
 
   const firstOfMonth = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const offset = (firstOfMonth.getDay() + 6) % 7;
 
-  // Calculamos offset (inicio en lunes)
-  let startOffset = (firstOfMonth.getDay() + 6) % 7; // convertimos domingo=0 a final
-
-  // Festivos y extras para el mes actual
   const holidays = loadUserData('holidays', []);
   const extras = loadUserData('extras', []);
 
-  for (let i = 0; i < startOffset; i++) {
-    const empty = document.createElement('div');
-    grid.appendChild(empty);
-  }
+  for (let i = 0; i < offset; i++) grid.appendChild(document.createElement('div'));
 
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
+    const isoDate = date.toISOString().slice(0, 10);
     const cell = document.createElement('div');
     cell.className = 'calendar-cell';
 
@@ -112,18 +116,14 @@ function renderCalendar() {
     dateSpan.textContent = day;
 
     const tagContainer = document.createElement('div');
-
     header.appendChild(dateSpan);
     header.appendChild(tagContainer);
     cell.appendChild(header);
 
-    // Turno
     const shiftInfo = getShiftForDate(date, selectedGroup);
     applyShiftClasses(cell, shiftInfo);
 
-    // Festivo
-    const isoDate = date.toISOString().slice(0,10);
-    const holiday = holidays.find(h => h.date === isoDate);
+    const holiday = holidays.find(h => h.date === isoDate) || null;
     if (holiday) {
       cell.classList.add('holiday-border');
       const tag = document.createElement('span');
@@ -132,53 +132,71 @@ function renderCalendar() {
       tagContainer.appendChild(tag);
     }
 
-    // Extras (punto naranja + gestión)
     const dayExtras = extras.filter(ex => ex.date === isoDate && ex.type !== 'ausencia');
-    if (dayExtras.length > 0) {
+    if (dayExtras.length) {
       const dot = document.createElement('div');
       dot.className = 'extra-dot';
       tagContainer.appendChild(dot);
     }
 
-    // Ausencias (vacaciones, AP, permisos, baja)
     const absences = extras.filter(ex => ex.date === isoDate && ex.type === 'ausencia');
-    if (absences.length > 0) {
-      const abs = absences[0]; // de momento 1 por día
-      applyAbsenceClass(cell, abs);
-    }
+    if (absences.length) applyAbsenceClass(cell, absences[0]);
 
     cell.addEventListener('click', () => {
-      openExtraModal(isoDate);
+      openDayModal(isoDate, shiftInfo, holiday, dayExtras, absences);
     });
 
     grid.appendChild(cell);
   }
 
   renderExtrasListForMonth(year, month);
+  updateBalanceHours();
 }
 
 function applyShiftClasses(cell, info) {
   cell.classList.remove('shift-morning', 'shift-afternoon', 'shift-night', 'shift-free');
-  if (info.shiftType === 'morning') {
-    cell.classList.add('shift-morning');
-  } else if (info.shiftType === 'afternoon') {
-    cell.classList.add('shift-afternoon');
-  } else if (info.shiftType === 'night') {
-    cell.classList.add('shift-night');
-  } else {
-    cell.classList.add('shift-free');
-  }
+  if (info.shiftType === 'morning') cell.classList.add('shift-morning');
+  else if (info.shiftType === 'afternoon') cell.classList.add('shift-afternoon');
+  else if (info.shiftType === 'night') cell.classList.add('shift-night');
+  else cell.classList.add('shift-free');
 }
 
 function applyAbsenceClass(cell, absence) {
   cell.classList.add('absence-keep-border');
-  if (absence.subtype === 'vacaciones') {
-    cell.classList.add('absence-vacation');
-  } else if (absence.subtype === 'asuntos') {
-    cell.classList.add('absence-personal');
-  } else if (absence.subtype === 'permiso') {
-    cell.classList.add('absence-permission');
-  } else if (absence.subtype === 'baja') {
-    cell.classList.add('absence-baja');
-  }
+  if (absence.subtype === 'vacaciones') cell.classList.add('absence-vacation');
+  else if (absence.subtype === 'asuntos') cell.classList.add('absence-personal');
+  else if (absence.subtype === 'permiso') cell.classList.add('absence-permission');
+  else if (absence.subtype === 'baja') cell.classList.add('absence-baja');
+}
+
+function openDayModal(isoDate, shiftInfo, holiday, dayExtras, absences) {
+  activeModalDate = isoDate;
+  const modal = document.getElementById('dayModal');
+  const title = document.getElementById('dayModalTitle');
+  const body = document.getElementById('dayModalBody');
+
+  title.textContent = isoDate;
+
+  body.innerHTML = `
+    <div class="user-row"><span>Turno</span><strong>${shiftInfo.shiftType}</strong></div>
+    <div class="user-row"><span>Festivo</span><strong>${holiday ? (holiday.type === 8 ? '8h' : '12h') : 'No'}</strong></div>
+    <div class="user-row"><span>Extras</span><strong>${dayExtras.length}</strong></div>
+    <div class="user-row"><span>Ausencias</span><strong>${absences.length}</strong></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+      <button class="glass-btn" id="openExtraEditor">Añadir / editar extra</button>
+      <button class="glass-btn danger" id="closeDayModalBtn">Cerrar</button>
+    </div>
+  `;
+
+  modal.classList.remove('hidden');
+
+  document.getElementById('closeDayModalBtn').onclick = closeDayModal;
+  document.getElementById('openExtraEditor').onclick = () => {
+    closeDayModal();
+    openExtraModal(isoDate);
+  };
+}
+
+function closeDayModal() {
+  document.getElementById('dayModal')?.classList.add('hidden');
 }
