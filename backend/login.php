@@ -3,19 +3,13 @@ session_start();
 require_once 'api.php';
 header('Content-Type: application/json; charset=utf-8');
 
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-  session_destroy();
-  echo json_encode(['success' => true]);
-  exit;
-}
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   echo json_encode(['success' => false, 'message' => 'Método no permitido']);
   exit;
 }
 
-$professional_id = $_POST['professional_id'] ?? '';
-$password = $_POST['password'] ?? '';
+$professional_id = trim($_POST['professional_id'] ?? '');
+$password = trim($_POST['password'] ?? '');
 
 if ($professional_id === '' || $password === '') {
   echo json_encode(['success' => false, 'message' => 'Faltan datos']);
