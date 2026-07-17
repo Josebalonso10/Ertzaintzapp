@@ -1,29 +1,26 @@
 <?php
 require_once 'api.php';
+header('Content-Type: application/json; charset=utf-8');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $professional_id = $_POST['professional_id'] ?? '';
-  $password = $_POST['password'] ?? '';
-
-  if ($professional_id === '' || $password === '') {
-    echo json_encode(['success' => false, 'message' => 'Campos obligatorios']);
-    exit;
-  }
-
-  if (findUserByProfessionalId($professional_id)) {
-    echo json_encode(['success' => false, 'message' => 'Usuario ya existe']);
-    exit;
-  }
-
-  $hash = password_hash($password, PASSWORD_DEFAULT);
-  $ok = createUser($professional_id, $hash, 0); // no admin, no aprobado aún
-
-  if ($ok) {
-    echo json_encode(['success' => true]);
-  } else {
-    echo json_encode(['success' => false, 'message' => 'Error de alta']);
-  }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+  echo json_encode(['success' => false, 'message' => 'Método no permitido']);
   exit;
 }
 
-echo json_encode(['success' => false, 'message' => 'Método no permitido']);
+$professional_id = $_POST['professional_id'] ?? '';
+$password = $_POST['password'] ?? '';
+
+if ($professional_id === '' || $password === '') {
+  echo json_encode(['success' => false, 'message' => 'Faltan datos']);
+  exit;
+}
+
+if (findUserByProfessionalId($professional_id)) {
+  echo json_encode(['success' => false, 'message' => 'El usuario ya existe']);
+  exit;
+}
+
+$hash = password_hash($password, PASSWORD_DEFAULT);
+createUser($professional_id, $hash, false, false);
+
+echo json_encode(['success' => true]);
