@@ -1,62 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Guardián de sesión: si no hay usuario, vamos a login
+  const user = getStoredUser();
+  if (!user && !window.location.pathname.includes('login.html')) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  if (user && document.getElementById('userRoleBadge')) {
+    document.getElementById('userRoleBadge').textContent = user.professional_id;
+  }
+
   // Tabs
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const tab = btn.dataset.tab;
-      document.querySelectorAll('.tab-view').forEach(view => {
-        view.classList.toggle('active', view.id === `tab-${tab}`);
-      });
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+      document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
     });
   });
 
-  // Modo noche (persistente via storage.js)
-  const darkToggle = document.getElementById('darkModeToggle');
-  const storedTheme = getStoredTheme();
-  if (storedTheme) {
-    document.body.classList.toggle('theme-dark', storedTheme === 'dark');
-    document.body.classList.toggle('theme-light', storedTheme === 'light');
+  // Tema Noche/Día
+  const toggle = document.getElementById('darkModeToggle');
+  if (toggle) {
+    const theme = loadUserData('theme', 'dark');
+    document.body.className = `theme-${theme}`;
+    toggle.addEventListener('click', () => {
+      const isDark = document.body.classList.contains('theme-dark');
+      const newTheme = isDark ? 'light' : 'dark';
+      document.body.className = `theme-${newTheme}`;
+      saveUserData('theme', newTheme);
+    });
   }
 
-  darkToggle?.addEventListener('click', () => {
-    const isDark = document.body.classList.toggle('theme-dark');
-    document.body.classList.toggle('theme-light', !isDark);
-    storeTheme(isDark ? 'dark' : 'light');
-  });
-
-  // Perfil / panel admin
-  const profileButton = document.getElementById('profileButton');
-  const adminPanel = document.getElementById('adminPanel');
-  const closeAdminPanel = document.getElementById('closeAdminPanel');
-
-  profileButton?.addEventListener('click', () => {
-    const user = getCurrentUser();
-    if (!user) return;
-
-    if (user.is_admin) {
-      adminPanel.classList.remove('hidden');
-      loadAdminPanelData();
-    } else {
-      // Para usuario normal, mostramos solo perfil simplificado
-      adminPanel.classList.remove('hidden');
-      loadUserProfilePanel();
-    }
-  });
-
-  closeAdminPanel?.addEventListener('click', () => {
-    adminPanel.classList.add('hidden');
-  });
-
   // Logout
-  const logoutButton = document.getElementById('logoutButton');
-  logoutButton?.addEventListener('click', async () => {
-    await logoutUser();
+  document.getElementById('logoutButton')?.addEventListener('click', () => {
+    localStorage.removeItem('ertzaintza_user');
     window.location.href = 'login.html';
   });
 
-  // Inicialización de módulos
-  initCalendar();
-  initSummary();
-  initSettings();
+  // Init módulos
+  if(typeof initCalendar === 'function') initCalendar();
+  if(typeof initNotes === 'function') initNotes();
+  if(typeof initSummary === 'function') initSummary();
+  if(typeof initSettings === 'function') initSettings();
 });
+
+function getStoredUser() {
+  try { return JSON.parse(localStorage.getItem('ertzaintza_user')); } catch { return null; }
+}
