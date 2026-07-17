@@ -9,6 +9,7 @@ function getDb() {
   $pass = getenv('DB_PASS');
 
   $dsn = "pgsql:host=$host;port=5432;dbname=$name";
+
   $pdo = new PDO($dsn, $user, $pass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
