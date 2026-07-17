@@ -9,7 +9,7 @@
 <body class="login-body">
   <main class="login-shell">
     <div class="login-logo-wrap">
-      <img class="login-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Escudo_de_la_Ertzaintza.svg/512px-Escudo_de_la_Ertzaintza.svg.png" alt="Logo Ertzaintza">
+      <img class="login-logo" src="assets/logo.svg" alt="Logo Ertzaintza" onerror="this.style.display='none'">
     </div>
 
     <section class="login-card glass-card">
@@ -26,7 +26,7 @@
 
       <form id="loginForm" class="auth-form active">
         <label for="loginProfessionalId">Número profesional</label>
-        <input id="loginProfessionalId" name="professional_id" type="text" inputmode="numeric" autocomplete="username" placeholder="29023" required>
+        <input id="loginProfessionalId" name="professional_id" type="text" inputmode="numeric" autocomplete="username" placeholder="12345" required>
 
         <label for="loginPassword">Contraseña</label>
         <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
@@ -36,7 +36,7 @@
 
       <form id="registerForm" class="auth-form">
         <label for="registerProfessionalId">Número profesional</label>
-        <input id="registerProfessionalId" name="professional_id" type="text" inputmode="numeric" autocomplete="username" placeholder="Introduce tu número profesional" required>
+        <input id="registerProfessionalId" name="professional_id" type="text" inputmode="numeric" autocomplete="username" placeholder="12345" required>
 
         <label for="registerPassword">Contraseña</label>
         <input id="registerPassword" name="password" type="password" autocomplete="new-password" placeholder="Introduce tu contraseña" required>
