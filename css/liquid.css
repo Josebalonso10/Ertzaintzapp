@@ -1,0 +1,52 @@
+/* Refuerzo de glassmorphism y detalles líquidos */
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(circle at top left,
+    rgba(255, 255, 255, 0.22),
+    transparent 60%);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.glass-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pequeñas burbujas decorativas */
+.glass-card::after {
+  content: "";
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle,
+    rgba(59, 130, 246, 0.8),
+    transparent 60%);
+  opacity: 0.18;
+}
+
+/* Inputs estilo cristal */
+input, select, textarea {
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  padding: 6px 10px;
+  color: var(--text-main);
+}
+textarea {
+  resize: vertical;
+}
+
+/* Listas en tarjetas */
+.list-card {
+  border-radius: 16px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgba(148, 163, 184, 0.7);
+}

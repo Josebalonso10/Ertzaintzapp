@@ -1,0 +1,100 @@
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.calendar-nav,
+.shift-cycle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Grid calendario */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* Cabeceras de días */
+.calendar-day-header {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Celda de día */
+.calendar-cell {
+  position: relative;
+  min-height: 70px;
+  padding: 4px 6px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calendar-cell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.calendar-cell-date {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Turnos */
+.shift-morning { /* semana 1 mañana + sábado/domingo mañana12 */
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+}
+.shift-afternoon { /* semana 3 tarde */
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.08);
+}
+.shift-night { /* semana 4 noche + noche12 */
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+.shift-free { /* semanas 2 y 5 libres */
+  border-style: dashed;
+}
+
+/* Festivos */
+.holiday-border {
+  border-width: 2px;
+  border-color: #facc15;
+}
+.holiday-tag {
+  font-size: 0.65rem;
+  color: #facc15;
+}
+
+/* Extras: punto naranja */
+.extra-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f97316;
+}
+
+/* Ausencias: vacaciones, AP, permisos, baja */
+.absence-vacation,
+.absence-personal,
+.absence-permission {
+  background: rgba(147, 51, 234, 0.22);
+}
+.absence-baja {
+  background: rgba(239, 68, 68, 0.3);
+}
+.absence-keep-border {
+  border-width: 2px;
+}
