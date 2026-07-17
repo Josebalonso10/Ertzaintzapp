@@ -2,95 +2,55 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>ERTZAINTZA - Acceso</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/liquid.css">
-  <link rel="stylesheet" href="css/darkmode.css">
+  <title>ERTZAINTZA - Acceso</title>
+  <link rel="stylesheet" href="css/login.css">
 </head>
-<body class="theme-light auth-body">
+<body class="login-body">
+  <main class="login-shell">
+    <div class="login-logo-wrap">
+      <img class="login-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Escudo_de_la_Ertzaintza.svg/512px-Escudo_de_la_Ertzaintza.svg.png" alt="Logo Ertzaintza">
+    </div>
 
-  <!-- Toggle modo noche en esquina -->
-  <button id="darkModeToggle" class="glass-toggle">
-    🌙 / ☀️
-  </button>
+    <section class="login-card glass-card">
+      <h1 class="login-title">ERTZAINTZA</h1>
+      <p class="login-subtitle">Acceso al calendario de turnos y complementos.</p>
 
-  <!-- Emblema (misma imagen que en index, en SVG a color) -->
-  <div class="logo-badge">
-    <img src="assets/logo.svg" alt="Escudo Ertzaintza">
-  </div>
-
-  <!-- Contenedor principal de login/registro -->
-  <main class="auth-container">
-    <div class="glass-card auth-card">
-      <h1>ERTZAINTZA</h1>
-      <p>Acceso al calendario de turnos y complementos.</p>
-
-      <!-- Pestañas de login / registro -->
-      <div class="auth-tabs">
-        <button class="auth-tab-btn active" data-auth-tab="login">Iniciar sesión</button>
-        <button class="auth-tab-btn" data-auth-tab="register">Registro</button>
+      <div class="auth-switch">
+        <button type="button" class="auth-tab-btn active" data-auth-tab="login">Iniciar sesión</button>
+        <button type="button" class="auth-tab-btn" data-auth-tab="register">Registro</button>
       </div>
 
-      <!-- LOGIN -->
+      <div id="loginError" class="form-message hidden"></div>
+      <div id="registerError" class="form-message hidden"></div>
+
       <form id="loginForm" class="auth-form active">
-        <label>Número profesional</label>
-        <input type="text" name="professional_id" required
-               placeholder="Ej. 29023">
+        <label for="loginProfessionalId">Número profesional</label>
+        <input id="loginProfessionalId" name="professional_id" type="text" inputmode="numeric" autocomplete="username" placeholder="29023" required>
 
-        <label>Contraseña</label>
-        <input type="password" name="password" required>
+        <label for="loginPassword">Contraseña</label>
+        <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
 
-        <button type="submit" class="glass-btn">
-          Entrar
-        </button>
-
-        <p id="loginError" class="auth-error hidden"></p>
+        <button type="submit" class="primary-btn">Entrar</button>
       </form>
 
-      <!-- REGISTRO -->
       <form id="registerForm" class="auth-form">
-        <label>Número profesional</label>
-        <input type="text" name="professional_id" required>
+        <label for="registerProfessionalId">Número profesional</label>
+        <input id="registerProfessionalId" name="professional_id" type="text" inputmode="numeric" autocomplete="username" placeholder="Introduce tu número profesional" required>
 
-        <label>Contraseña</label>
-        <input type="password" name="password" required>
+        <label for="registerPassword">Contraseña</label>
+        <input id="registerPassword" name="password" type="password" autocomplete="new-password" placeholder="Introduce tu contraseña" required>
 
-        <label>Repetir contraseña</label>
-        <input type="password" name="password_confirm" required>
+        <label for="registerPasswordConfirm">Repetir contraseña</label>
+        <input id="registerPasswordConfirm" name="password_confirm" type="password" autocomplete="new-password" placeholder="Repite tu contraseña" required>
 
-        <button type="submit" class="glass-btn">
-          Solicitar alta
-        </button>
-
-        <p class="auth-hint">
-          Un administrador deberá aprobar tu registro antes de poder entrar.
-        </p>
-        <p id="registerError" class="auth-error hidden"></p>
+        <button type="submit" class="primary-btn">Solicitar alta</button>
       </form>
-    </div>
+
+      <p class="login-footer">Un administrador deberá aprobar tu registro antes de poder entrar.</p>
+    </section>
   </main>
 
-  <!-- JS (mismo orden de theme y auth que en index) -->
-  <script src="js/storage.js"></script>
   <script src="js/auth.js"></script>
-  <script>
-    // Activar/recuperar tema al cargar login
-    document.addEventListener('DOMContentLoaded', () => {
-      const storedTheme = getStoredTheme();
-      if (storedTheme) {
-        document.body.classList.toggle('theme-dark', storedTheme === 'dark');
-        document.body.classList.toggle('theme-light', storedTheme === 'light');
-      }
-
-      const darkToggle = document.getElementById('darkModeToggle');
-      darkToggle?.addEventListener('click', () => {
-        const isDark = document.body.classList.toggle('theme-dark');
-        document.body.classList.toggle('theme-light', !isDark);
-        storeTheme(isDark ? 'dark' : 'light');
-      });
-    });
-  </script>
 </body>
 </html>
