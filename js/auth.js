@@ -1,69 +1,62 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Tabs login/registro
-  const tabBtns = document.querySelectorAll('.auth-tab-btn');
-  const forms = {
-    login: document.getElementById('loginForm'),
-    register: document.getElementById('registerForm')
-  };
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
 
-  tabBtns.forEach(btn => {
+  if (!loginForm && !registerForm) return;
+
+  const tabs = document.querySelectorAll('.auth-tab-btn');
+  const forms = document.querySelectorAll('.auth-form');
+
+  tabs.forEach(btn => {
     btn.addEventListener('click', () => {
-      tabBtns.forEach(b => b.classList.remove('active'));
+      tabs.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const tab = btn.dataset.authTab;
-      Object.values(forms).forEach(f => f.classList.remove('active'));
-      forms[tab].classList.add('active');
+      forms.forEach(f => f.classList.toggle('active', f.id === `${tab}Form`));
     });
   });
 
-  // LOGIN
-  forms.login?.addEventListener('submit', async e => {
+  loginForm?.addEventListener('submit', async e => {
     e.preventDefault();
-    const form = e.target;
-    const id = form.professional_id.value.trim();
-    const password = form.password.value;
-
-    const resp = await fetch('backend/login.php', {
+    const form = new FormData(loginForm);
+    const res = await fetch('backend/login.php', {
       method: 'POST',
-      body: new URLSearchParams({ professional_id: id, password })
+      body: form
     });
-    const data = await resp.json();
+    const data = await res.json();
 
+    const err = document.getElementById('loginError');
     if (!data.success) {
-      const err = document.getElementById('loginError');
-      err.textContent = data.message || 'Error de inicio de sesión';
+      err.textContent = data.message || 'Error de login';
       err.classList.remove('hidden');
       return;
     }
 
-    setCurrentUser(data.user);
+    localStorage.setItem('ertzaintza_user', JSON.stringify(data.user));
     window.location.href = 'index.html';
   });
 
-  // REGISTRO
-  forms.register?.addEventListener('submit', async e => {
+  registerForm?.addEventListener('submit', async e => {
     e.preventDefault();
-    const form = e.target;
-    const id = form.professional_id.value.trim();
-    const pass = form.password.value;
-    const pass2 = form.password_confirm.value;
-
+    const pass = registerForm.querySelector('[name="password"]').value;
+    const pass2 = registerForm.querySelector('[name="password_confirm"]').value;
     const err = document.getElementById('registerError');
 
     if (pass !== pass2) {
-      err.textContent = 'Las contraseñas no coinciden.';
+      err.textContent = 'Las contraseñas no coinciden';
       err.classList.remove('hidden');
       return;
     }
 
-    const resp = await fetch('backend/register.php', {
+    const form = new FormData(registerForm);
+    const res = await fetch('backend/register.php', {
       method: 'POST',
-      body: new URLSearchParams({ professional_id: id, password: pass })
+      body: form
     });
-    const data = await resp.json();
+    const data = await res.json();
 
     if (!data.success) {
-      err.textContent = data.message || 'Error al registrar.';
+      err.textContent = data.message || 'Error en el registro';
       err.classList.remove('hidden');
       return;
     }
@@ -73,8 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Logout simple si más adelante quieres usarlo desde JS
 async function logoutUser() {
-  await fetch('backend/login.php?action=logout', { method: 'GET' });
   localStorage.removeItem('ertzaintza_user');
+  await fetch('backend/login.php?action=logout', { method: 'GET' }).catch(() => {});
 }
