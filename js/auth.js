@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginError = document.getElementById('loginError');
   const registerError = document.getElementById('registerError');
 
+  const loginId = document.getElementById('loginProfessionalId');
+  const registerId = document.getElementById('registerProfessionalId');
+  if (loginId) loginId.value = '';
+  if (registerId) registerId.value = '';
+
   tabs.forEach(btn => {
     btn.addEventListener('click', () => {
       tabs.forEach(b => b.classList.remove('active'));
@@ -23,15 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     loginError.classList.add('hidden');
 
-    const formData = new FormData(loginForm);
-
     try {
       const res = await fetch('backend/login.php', {
         method: 'POST',
-        body: formData
+        body: new FormData(loginForm)
       });
 
-      const data = await res.json();
+      const raw = await res.text();
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw new Error(raw || 'Respuesta inválida del servidor');
+      }
 
       if (!data.success) {
         loginError.textContent = data.message || 'No se ha podido iniciar sesión.';
@@ -42,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('ertzaintza_user', JSON.stringify(data.user));
       window.location.href = 'index.html';
     } catch (err) {
-      loginError.textContent = 'Error de conexión con el servidor.';
+      loginError.textContent = err.message || 'Error de conexión con el servidor.';
       loginError.classList.remove('hidden');
     }
   });
@@ -60,15 +69,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const formData = new FormData(registerForm);
-
     try {
       const res = await fetch('backend/register.php', {
         method: 'POST',
-        body: formData
+        body: new FormData(registerForm)
       });
 
-      const data = await res.json();
+      const raw = await res.text();
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw new Error(raw || 'Respuesta inválida del servidor');
+      }
 
       if (!data.success) {
         registerError.textContent = data.message || 'No se ha podido registrar.';
@@ -83,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
       registerError.classList.remove('hidden');
       registerForm.reset();
     } catch (err) {
-      registerError.textContent = 'Error de conexión con el servidor.';
+      registerError.textContent = err.message || 'Error de conexión con el servidor.';
       registerError.classList.remove('hidden');
     }
   });
